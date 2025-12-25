@@ -6,6 +6,35 @@ let currentTask = null;
 let currentQuestionIndex = 0;
 let userAnswers = {}; // { taskId: [{ questionId, userChoice, correct, question, options }] }
 let currentTaskAnswers = [];
+let shuffledOptionsMap = {}; // Track original -> shuffled index mapping
+
+// =====================================
+// UTILITY: SHUFFLE ARRAY (Fisher-Yates)
+// =====================================
+function shuffleArray(array) {
+    const shuffled = [...array]; // Copy
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+// =====================================
+// UTILITY: CREATE INDEX MAPPING
+// =====================================
+function createIndexMapping(originalArray, shuffledArray) {
+    // Map: original_index -> shuffled_index
+    // Used to track where the correct answer ended up
+    const mapping = {};
+    
+    originalArray.forEach((item, origIdx) => {
+        const newIdx = shuffledArray.indexOf(item);
+        mapping[origIdx] = newIdx;
+    });
+    
+    return mapping;
+}
 
 // =====================================
 // INITIALIZATION
@@ -44,6 +73,7 @@ function startQuiz(taskId) {
     currentTask = taskId;
     currentQuestionIndex = 0;
     currentTaskAnswers = [];
+    shuffledOptionsMap = {}; // Reset for new quiz
 
     // Hide tasks grid, show quiz container
     document.querySelector('.tasks-grid').style.display = 'none';
@@ -64,6 +94,19 @@ function showQuestion() {
     const totalQuestions = questions.length;
     const progress = ((currentQuestionIndex) / totalQuestions) * 100;
 
+    // ===== SHUFFLE OPTIONS =====
+    const originalOptions = question.options;
+    const shuffledOptions = shuffleArray(originalOptions);
+    const indexMapping = createIndexMapping(originalOptions, shuffledOptions);
+    
+    // Store mapping for this question (key: question ID)
+    shuffledOptionsMap[question.id] = {
+        originalCorrect: question.correct,
+        mapping: indexMapping,
+        shuffledCorrect: indexMapping[question.correct] // Where correct answer ended up
+    };
+    // ===== END SHUFFLE =====
+
     const quizContainer = document.getElementById('quiz-container');
     quizContainer.innerHTML = `
         <div class="question-card">
@@ -79,7 +122,7 @@ function showQuestion() {
             <h3>${question.text}</h3>
 
             <div class="options">
-                ${question.options.map((opt, idx) => `
+                ${shuffledOptions.map((opt, idx) => `
                     <button class="option-btn" data-index="${idx}">
                         ${String.fromCharCode(65 + idx)}. ${opt}
                     </button>
@@ -95,7 +138,7 @@ function showQuestion() {
     // Attach option click handlers
     const optionBtns = quizContainer.querySelectorAll('.option-btn');
     optionBtns.forEach(btn => {
-        btn.addEventListener('click', () => handleAnswer(btn));
+        btn.addEventListener('click', () => handleAnswer(btn, question, shuffledOptions));
     });
 
     // Attach prev button
@@ -108,20 +151,21 @@ function showQuestion() {
     }
 }
 
-function handleAnswer(btn) {
-    const selectedIndex = parseInt(btn.dataset.index);
-    const questions = quizData[currentTask];
-    const question = questions[currentQuestionIndex];
-    const isCorrect = selectedIndex === question.correct;
+function handleAnswer(btn, question, shuffledOptions) {
+    const selectedIndex = parseInt(btn.dataset.index); // Index in SHUFFLED array
+    const questionMeta = shuffledOptionsMap[question.id];
+    const correctShuffledIndex = questionMeta.shuffledCorrect;
+    const isCorrect = selectedIndex === correctShuffledIndex;
 
-    // Save answer
+    // Save answer (using shuffled option text)
     currentTaskAnswers[currentQuestionIndex] = {
         questionId: question.id,
         questionText: question.text,
-        userChoice: selectedIndex,
-        correctChoice: question.correct,
+        userChoice: selectedIndex, // Position in shuffled display
+        correctChoice: correctShuffledIndex, // Position in shuffled display
         isCorrect: isCorrect,
-        options: question.options,
+        options: shuffledOptions, // Display the shuffled options
+        optionsOriginal: question.options, // Store original for reference
         explanation: question.explanation
     };
 
@@ -132,13 +176,20 @@ function handleAnswer(btn) {
     // Highlight correct/incorrect
     btn.classList.add(isCorrect ? 'correct' : 'incorrect');
     if (!isCorrect) {
-        allOptions[question.correct].classList.add('correct');
+        allOptions[correctShuffledIndex].classList.add('correct');
     }
 
     // Show explanation
     const card = document.querySelector('.question-card');
     const explanationDiv = document.createElement('div');
     explanationDiv.className = 'explanation';
+    
+    // Build explanation text with reference to original positions
+    const userChoiceOriginal = Object.keys(questionMeta.mapping).find(
+        k => questionMeta.mapping[k] === selectedIndex
+    );
+    const correctOriginal = questionMeta.originalCorrect;
+    
     explanationDiv.innerHTML = `
         <div class="result-badge ${isCorrect ? 'correct' : 'incorrect'}">
             ${isCorrect ? '✓ Правильно!' : '✗ Неправильно'}
@@ -151,7 +202,7 @@ function handleAnswer(btn) {
     const navButtons = card.querySelector('.navigation-buttons');
     const nextBtn = document.createElement('button');
     nextBtn.className = 'nav-btn next-btn';
-    nextBtn.textContent = currentQuestionIndex < questions.length - 1 ? 'Далее →' : 'Завершить';
+    nextBtn.textContent = currentQuestionIndex < quizData[currentTask].length - 1 ? 'Далее →' : 'Завершить';
     nextBtn.addEventListener('click', () => {
         currentQuestionIndex++;
         showQuestion();
