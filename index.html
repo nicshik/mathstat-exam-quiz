@@ -35,6 +35,8 @@
         .container {
             max-width: 1000px;
             margin: 0 auto;
+            position: relative;
+            z-index: 10;
         }
 
         .header {
@@ -69,6 +71,8 @@
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
             border-left: 5px solid;
+            position: relative;
+            z-index: 20; /* Ensure clickable */
         }
 
         .task-card:hover {
@@ -105,6 +109,8 @@
             font-size: 1em;
             transition: background 0.3s;
             text-decoration: none;
+            position: relative;
+            z-index: 30; /* Higher than card */
         }
 
         .btn:hover {
@@ -896,7 +902,7 @@
 
                 html += `
                     <div class="${classes.join(' ')}" onclick="selectAnswer(${idx})">
-                        <label style="cursor: pointer;">
+                        <label style="cursor: pointer; display: flex; align-items: center;">
                             <input type="radio" name="option_${currentQuestion}" ${isSelected ? 'checked' : ''} style="margin-right: 10px;">
                             ${opt.text}
                         </label>
@@ -968,7 +974,7 @@
                 reviewHtml += `
                     <div class="review-item ${reviewClass}">
                         <strong>${statusSymbol} Вопрос ${idx + 1}</strong>
-                        <div>${q.text.substring(0, 100)}...</div>
+                        <div style="margin-bottom: 5px;">${q.text.substring(0, 100)}...</div>
                         ${selectedIdx !== undefined ? `<div style="margin-top: 5px;"><strong>Ваш ответ:</strong> ${q.options[selectedIdx].text}</div>` : ''}
                         ${!isCorrect ? `<div class="correct-answer"><strong>Правильный ответ:</strong> ${q.options[correctIdx].text}</div>` : ''}
                         <div style="margin-top: 8px; font-size: 0.9em; color: var(--text-light);">${q.options[selectedIdx ?? correctIdx].explanation}</div>
@@ -998,6 +1004,13 @@
                 closeQuiz();
             }
         });
+
+        // Expose functions to window
+        window.startQuiz = startQuiz;
+        window.closeQuiz = closeQuiz;
+        window.nextQuestion = nextQuestion;
+        window.prevQuestion = prevQuestion;
+        window.selectAnswer = selectAnswer;
     </script>
 </body>
 </html>
