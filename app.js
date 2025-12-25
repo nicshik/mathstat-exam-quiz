@@ -1,152 +1,231 @@
-// app.js - Модульный код для quiz приложения
+// =====================================
+// CONFIGURATION & STATE
+// =====================================
 let quizData = {};
 let currentTask = null;
 let currentQuestionIndex = 0;
-let score = 0;
-let answers = [];
+let userAnswers = {}; // { taskId: [{ questionId, userChoice, correct, question, options }] }
+let currentTaskAnswers = [];
 
-// Загрузка данных при старте
+// =====================================
+// INITIALIZATION
+// =====================================
+document.addEventListener('DOMContentLoaded', () => {
+    loadQuizData();
+    attachStartButtons();
+});
+
 async function loadQuizData() {
     try {
         const response = await fetch('./quizData.json');
-        if (!response.ok) throw new Error('Failed to load quiz data');
         quizData = await response.json();
         console.log('Quiz data loaded:', Object.keys(quizData).length, 'tasks');
     } catch (error) {
-        console.error('Error loading quiz data:', error);
-        document.body.innerHTML = '<div style="color:red;padding:20px;">Ошибка загрузки данных. Проверьте консоль.</div>';
+        console.error('Failed to load quiz data:', error);
+        alert('Ошибка загрузки данных. Проверьте quizData.json');
     }
 }
 
-// Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', async () => {
-    await loadQuizData();
-    setupEventListeners();
-});
-
-// Установка обработчиков событий
-function setupEventListeners() {
-    const taskCards = document.querySelectorAll('.task-card');
-    taskCards.forEach(card => {
-        const taskNum = card.getAttribute('data-task');
-        const button = card.querySelector('.start-btn');
-        if (button) {
-            button.addEventListener('click', () => startQuiz(taskNum));
-        }
+function attachStartButtons() {
+    const startButtons = document.querySelectorAll('.start-btn');
+    startButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const taskCard = e.target.closest('.task-card');
+            const taskId = taskCard.dataset.task;
+            startQuiz(taskId);
+        });
     });
 }
 
-// Запуск квиза для задачи
-function startQuiz(taskNumber) {
-    currentTask = taskNumber;
+// =====================================
+// QUIZ FLOW
+// =====================================
+function startQuiz(taskId) {
+    currentTask = taskId;
     currentQuestionIndex = 0;
-    score = 0;
-    answers = [];
+    currentTaskAnswers = [];
 
-    if (!quizData[taskNumber] || quizData[taskNumber].length === 0) {
-        alert('Вопросы для этой задачи пока недоступны.');
-        return;
-    }
-
-    document.querySelector('.container').style.display = 'none';
+    // Hide tasks grid, show quiz container
+    document.querySelector('.tasks-grid').style.display = 'none';
+    document.querySelector('.subtitle').style.display = 'none';
     document.getElementById('quiz-container').style.display = 'block';
+
     showQuestion();
 }
 
-// Показать текущий вопрос
 function showQuestion() {
     const questions = quizData[currentTask];
+    if (!questions || currentQuestionIndex >= questions.length) {
+        showResults();
+        return;
+    }
+
     const question = questions[currentQuestionIndex];
+    const totalQuestions = questions.length;
+    const progress = ((currentQuestionIndex) / totalQuestions) * 100;
 
     const quizContainer = document.getElementById('quiz-container');
     quizContainer.innerHTML = `
         <div class="question-card">
-            <div class="question-header">
-                <span>Задача ${currentTask}</span>
-                <span>Вопрос ${currentQuestionIndex + 1} из ${questions.length}</span>
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: ${progress}%"></div>
             </div>
+
+            <div class="question-header">
+                <span>Задача ${currentTask} — Вопрос ${currentQuestionIndex + 1} из ${totalQuestions}</span>
+                <span>ID: ${question.id}</span>
+            </div>
+
             <h3>${question.text}</h3>
+
             <div class="options">
-                ${question.options.map((opt, i) => `
-                    <button class="option-btn" onclick="selectAnswer(${i})">${opt}</button>
+                ${question.options.map((opt, idx) => `
+                    <button class="option-btn" data-index="${idx}">
+                        ${String.fromCharCode(65 + idx)}. ${opt}
+                    </button>
                 `).join('')}
             </div>
-            <button class="nav-btn" onclick="goBack()">Вернуться к задачам</button>
+
+            <div class="navigation-buttons">
+                ${currentQuestionIndex > 0 ? '<button class="nav-btn prev-btn">← Назад</button>' : ''}
+            </div>
         </div>
     `;
-}
 
-// Выбор ответа
-function selectAnswer(optionIndex) {
-    const questions = quizData[currentTask];
-    const question = questions[currentQuestionIndex];
-    const isCorrect = optionIndex === question.correct;
-
-    answers.push({
-        questionId: question.id,
-        selected: optionIndex,
-        correct: question.correct,
-        isCorrect: isCorrect
+    // Attach option click handlers
+    const optionBtns = quizContainer.querySelectorAll('.option-btn');
+    optionBtns.forEach(btn => {
+        btn.addEventListener('click', () => handleAnswer(btn));
     });
 
-    if (isCorrect) score++;
-
-    // Показываем объяснение
-    const quizContainer = document.getElementById('quiz-container');
-    const resultClass = isCorrect ? 'correct' : 'incorrect';
-    const resultText = isCorrect ? 'Правильно!' : 'Неправильно';
-
-    quizContainer.innerHTML = `
-        <div class="question-card">
-            <div class="result-badge ${resultClass}">${resultText}</div>
-            <h3>${question.text}</h3>
-            <div class="explanation">
-                <strong>Правильный ответ:</strong> ${question.options[question.correct]}
-                <br><br>
-                <strong>Объяснение:</strong> ${question.explanation}
-            </div>
-            <button class="nav-btn" onclick="nextQuestion()">
-                ${currentQuestionIndex + 1 < questions.length ? 'Следующий вопрос' : 'Завершить'}
-            </button>
-        </div>
-    `;
-}
-
-// Следующий вопрос
-function nextQuestion() {
-    const questions = quizData[currentTask];
-    currentQuestionIndex++;
-
-    if (currentQuestionIndex < questions.length) {
-        showQuestion();
-    } else {
-        showResults();
+    // Attach prev button
+    const prevBtn = quizContainer.querySelector('.prev-btn');
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            currentQuestionIndex--;
+            showQuestion();
+        });
     }
 }
 
-// Показать результаты
-function showResults() {
+function handleAnswer(btn) {
+    const selectedIndex = parseInt(btn.dataset.index);
     const questions = quizData[currentTask];
-    const percentage = Math.round((score / questions.length) * 100);
+    const question = questions[currentQuestionIndex];
+    const isCorrect = selectedIndex === question.correct;
+
+    // Save answer
+    currentTaskAnswers[currentQuestionIndex] = {
+        questionId: question.id,
+        questionText: question.text,
+        userChoice: selectedIndex,
+        correctChoice: question.correct,
+        isCorrect: isCorrect,
+        options: question.options,
+        explanation: question.explanation
+    };
+
+    // Disable all options
+    const allOptions = document.querySelectorAll('.option-btn');
+    allOptions.forEach(opt => opt.disabled = true);
+
+    // Highlight correct/incorrect
+    btn.classList.add(isCorrect ? 'correct' : 'incorrect');
+    if (!isCorrect) {
+        allOptions[question.correct].classList.add('correct');
+    }
+
+    // Show explanation
+    const card = document.querySelector('.question-card');
+    const explanationDiv = document.createElement('div');
+    explanationDiv.className = 'explanation';
+    explanationDiv.innerHTML = `
+        <div class="result-badge ${isCorrect ? 'correct' : 'incorrect'}">
+            ${isCorrect ? '✓ Правильно!' : '✗ Неправильно'}
+        </div>
+        <strong>Объяснение:</strong> ${question.explanation}
+    `;
+    card.appendChild(explanationDiv);
+
+    // Add next button
+    const navButtons = card.querySelector('.navigation-buttons');
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'nav-btn next-btn';
+    nextBtn.textContent = currentQuestionIndex < questions.length - 1 ? 'Далее →' : 'Завершить';
+    nextBtn.addEventListener('click', () => {
+        currentQuestionIndex++;
+        showQuestion();
+    });
+    navButtons.appendChild(nextBtn);
+}
+
+// =====================================
+// RESULTS PAGE
+// =====================================
+function showResults() {
+    userAnswers[currentTask] = currentTaskAnswers;
+
+    const correctCount = currentTaskAnswers.filter(a => a.isCorrect).length;
+    const totalCount = currentTaskAnswers.length;
+    const percentage = Math.round((correctCount / totalCount) * 100);
 
     const quizContainer = document.getElementById('quiz-container');
     quizContainer.innerHTML = `
-        <div class="question-card">
-            <h2>Результаты</h2>
+        <div class="question-card results-card">
+            <h2 style="text-align: center; color: #667eea; margin-bottom: 2rem;">
+                Результаты — Задача ${currentTask}
+            </h2>
+
             <div class="score-display">
-                <div class="score-number">${score} из ${questions.length}</div>
+                <div class="score-number">${correctCount} / ${totalCount}</div>
                 <div class="score-percentage">${percentage}%</div>
             </div>
-            <button class="nav-btn" onclick="goBack()">Вернуться к задачам</button>
-            <button class="nav-btn" onclick="startQuiz('${currentTask}')">Пройти заново</button>
+
+            <div class="results-breakdown">
+                <h3 style="margin: 2rem 0 1rem 0; color: #333;">Детальный разбор:</h3>
+                ${currentTaskAnswers.map((answer, idx) => `
+                    <div class="result-item ${answer.isCorrect ? 'result-correct' : 'result-incorrect'}">
+                        <div class="result-header">
+                            <span class="result-number">Вопрос ${idx + 1}</span>
+                            <span class="result-status">${answer.isCorrect ? '✓ Верно' : '✗ Ошибка'}</span>
+                        </div>
+                        <div class="result-question">${answer.questionText}</div>
+                        <div class="result-answers">
+                            <div class="result-answer-line">
+                                <strong>Ваш ответ:</strong> 
+                                <span class="${answer.isCorrect ? 'answer-correct' : 'answer-incorrect'}">
+                                    ${String.fromCharCode(65 + answer.userChoice)}. ${answer.options[answer.userChoice]}
+                                </span>
+                            </div>
+                            ${!answer.isCorrect ? `
+                                <div class="result-answer-line">
+                                    <strong>Правильный ответ:</strong> 
+                                    <span class="answer-correct">
+                                        ${String.fromCharCode(65 + answer.correctChoice)}. ${answer.options[answer.correctChoice]}
+                                    </span>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="result-explanation">${answer.explanation}</div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div class="results-buttons">
+                <button class="nav-btn retry-btn">Пройти заново</button>
+                <button class="nav-btn home-btn">Вернуться к задачам</button>
+            </div>
         </div>
     `;
+
+    // Attach buttons
+    document.querySelector('.retry-btn').addEventListener('click', () => startQuiz(currentTask));
+    document.querySelector('.home-btn').addEventListener('click', returnHome);
 }
 
-// Вернуться к списку задач
-function goBack() {
-    document.querySelector('.container').style.display = 'block';
+function returnHome() {
+    document.querySelector('.tasks-grid').style.display = 'grid';
+    document.querySelector('.subtitle').style.display = 'block';
     document.getElementById('quiz-container').style.display = 'none';
-    currentTask = null;
-    currentQuestionIndex = 0;
+    document.getElementById('quiz-container').innerHTML = '';
 }
