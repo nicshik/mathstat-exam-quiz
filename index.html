@@ -69,6 +69,8 @@
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
             border-left: 5px solid;
+            position: relative; /* Ensure z-index works if needed */
+            z-index: 1;
         }
 
         .task-card:hover {
@@ -849,12 +851,12 @@
                     },
                     {
                         type: "multiple",
-                        text: "Интерпретация β₁ = 1.2: "При увеличении X на 1, Y в среднем",
+                        text: "Интерпретация β₁ = 1.2: 'При увеличении X на 1, Y в среднем",
                         options: [
-                            { text: "увеличивается на 1.2"", correct: true },
-                            { text: "увеличивается на 0.6"", correct: false },
-                            { text: "уменьшается на 1.2"", correct: false },
-                            { text: "увеличивается в 1.2 раза"", correct: false }
+                            { text: "увеличивается на 1.2'", correct: true },
+                            { text: "увеличивается на 0.6'", correct: false },
+                            { text: "уменьшается на 1.2'", correct: false },
+                            { text: "увеличивается в 1.2 раза'", correct: false }
                         ]
                     },
                     {
