@@ -3,21 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Матстат Квиз - Итоговый экзамен</title>
+    <title>Матстат Квиз - Подготовка к защите экзамена</title>
     <style>
-        :root {
-            --primary: #2080a0;
-            --primary-hover: #1a6b8a;
-            --success: #28a745;
-            --error: #dc3545;
-            --warning: #ffc107;
-            --bg: #f8f9fa;
-            --surface: #ffffff;
-            --text: #212529;
-            --text-light: #6c757d;
-            --border: #e0e0e0;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -25,950 +12,255 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: var(--text);
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-            position: relative;
-            z-index: 10;
         }
 
-        .header {
+        h1 {
             text-align: center;
             color: white;
-            margin-bottom: 30px;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
         }
 
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.95;
-        }
-
-        .main-menu {
+        .tasks-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .task-card {
-            background: var(--surface);
+            background: white;
             border-radius: 12px;
-            padding: 25px;
+            padding: 1.5rem;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border-left: 5px solid;
-            position: relative;
-            z-index: 20; /* Ensure clickable */
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .task-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
             box-shadow: 0 8px 12px rgba(0,0,0,0.15);
         }
 
-        .task-card.task1 { border-left-color: #ff6b6b; }
-        .task-card.task2 { border-left-color: #4ecdc4; }
-        .task-card.task3 { border-left-color: #45b7d1; }
-        .task-card.task4 { border-left-color: #f7b731; }
-        .task-card.task5 { border-left-color: #5f27cd; }
-
         .task-card h2 {
-            font-size: 1.3em;
-            margin-bottom: 12px;
-            color: var(--text);
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .task-card h3 {
+            color: #666;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
         }
 
         .task-card p {
-            color: var(--text-light);
-            line-height: 1.6;
-            margin-bottom: 15px;
+            color: #888;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background: var(--primary);
+        .start-btn {
+            background: #667eea;
             color: white;
             border: none;
-            border-radius: 6px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
             cursor: pointer;
-            font-size: 1em;
-            transition: background 0.3s;
-            text-decoration: none;
-            position: relative;
-            z-index: 30; /* Higher than card */
-        }
-
-        .btn:hover {
-            background: var(--primary-hover);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            overflow-y: auto;
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: var(--surface);
-            border-radius: 12px;
+            transition: background 0.2s;
             width: 100%;
-            max-width: 800px;
-            margin-top: 50px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
 
-        .modal-header {
-            padding: 20px 25px;
-            border-bottom: 1px solid var(--border);
+        .start-btn:hover {
+            background: #5568d3;
+        }
+
+        #quiz-container {
+            display: none;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
         }
 
-        .modal-header h2 {
-            margin: 0;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5em;
-            cursor: pointer;
-            color: var(--text-light);
-        }
-
-        .modal-body {
-            padding: 25px;
-        }
-
-        .question-container {
-            margin-bottom: 30px;
-        }
-
-        .question-counter {
-            font-size: 0.9em;
-            color: var(--text-light);
-            margin-bottom: 10px;
-        }
-
-        .question-text {
-            font-size: 1.1em;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: var(--text);
+        .question-card h3 {
+            color: #333;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
         }
 
         .options {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
         }
 
-        .option {
-            padding: 15px;
-            border: 2px solid var(--border);
+        .option-btn {
+            background: #f5f5f5;
+            border: 2px solid transparent;
+            padding: 1rem;
             border-radius: 8px;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s;
-            background: var(--bg);
-        }
-
-        .option:hover {
-            border-color: var(--primary);
-            background: #f0f8ff;
-        }
-
-        .option.selected {
-            border-color: var(--primary);
-            background: #e3f2fd;
-        }
-
-        .option.correct {
-            border-color: var(--success);
-            background: #d4edda;
-        }
-
-        .option.incorrect {
-            border-color: var(--error);
-            background: #f8d7da;
-        }
-
-        .progress-bar {
-            height: 6px;
-            background: var(--border);
-            border-radius: 3px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            transition: width 0.3s;
-        }
-
-        .modal-footer {
-            padding: 20px 25px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 10px;
-            justify-content: space-between;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .result-screen {
-            text-align: center;
-            padding: 40px;
-        }
-
-        .result-score {
-            font-size: 3em;
-            font-weight: bold;
-            color: var(--success);
-            margin: 20px 0;
-        }
-
-        .answer-review {
-            margin-top: 30px;
-            padding: 20px;
-            background: var(--bg);
-            border-radius: 8px;
             text-align: left;
-            max-height: 400px;
-            overflow-y: auto;
+            transition: all 0.2s;
         }
 
-        .review-item {
-            padding: 15px;
-            margin-bottom: 12px;
-            border-left: 4px solid;
-            background: white;
+        .option-btn:hover {
+            background: #e8e8e8;
+            border-color: #667eea;
+        }
+
+        .explanation {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 1rem;
             border-radius: 4px;
-            font-size: 0.95em;
-            line-height: 1.5;
+            margin: 1.5rem 0;
+            line-height: 1.6;
         }
 
-        .review-item.correct {
-            border-left-color: var(--success);
+        .result-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-bottom: 1rem;
         }
 
-        .review-item.incorrect {
-            border-left-color: var(--error);
+        .result-badge.correct {
+            background: #d4edda;
+            color: #155724;
         }
 
-        .review-item strong {
-            display: block;
-            margin-bottom: 8px;
+        .result-badge.incorrect {
+            background: #f8d7da;
+            color: #721c24;
         }
 
-        .review-item.correct strong {
-            color: var(--success);
+        .nav-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-right: 0.5rem;
+            margin-top: 1rem;
         }
 
-        .review-item.incorrect strong {
-            color: var(--error);
+        .nav-btn:hover {
+            background: #5a6268;
         }
 
-        .correct-answer {
-            margin-top: 10px;
-            padding: 10px;
-            background: #f0f8ff;
-            border-radius: 4px;
-            border-left: 3px solid var(--success);
-            color: var(--success);
-            font-weight: 500;
+        .score-display {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-percentage {
+            font-size: 1.5rem;
+            color: #888;
         }
 
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8em;
+            h1 {
+                font-size: 2rem;
             }
-
-            .main-menu {
+            .tasks-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .task-card {
-                padding: 20px;
-            }
-
-            .modal-content {
-                margin-top: 20px;
-            }
-
-            .question-text {
-                font-size: 1em;
-            }
-
-            .option {
-                padding: 12px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Матстат Квиз</h1>
-            <p>Подготовка к защите итогового экзамена</p>
-        </div>
+        <h1>Матстат Квиз</h1>
+        <p class="subtitle">Подготовка к защите итогового экзамена</p>
 
-        <div id="mainMenu" class="main-menu">
-            <div class="task-card task1" onclick="startQuiz(1)">
+        <div class="tasks-grid">
+            <div class="task-card" data-task="1">
                 <h2>Задача 1</h2>
-                <p><strong>Формула полной вероятности</strong></p>
+                <h3>Формула полной вероятности</h3>
                 <p>8 вопросов о разбиениях, условной вероятности и Байесе</p>
-                <button class="btn">Начать</button>
+                <button class="start-btn">Начать</button>
             </div>
 
-            <div class="task-card task2" onclick="startQuiz(2)">
+            <div class="task-card" data-task="2">
                 <h2>Задача 2</h2>
-                <p><strong>Сбор купонов</strong></p>
+                <h3>Сбор купонов</h3>
                 <p>7 вопросов о геометрическом распределении и ожидании</p>
-                <button class="btn">Начать</button>
+                <button class="start-btn">Начать</button>
             </div>
 
-            <div class="task-card task3" onclick="startQuiz(3)">
+            <div class="task-card" data-task="3">
                 <h2>Задача 3</h2>
-                <p><strong>Критерий Колмогорова</strong></p>
-                <p>8 вопросов о масштабировании, тестировании, интерпретации</p>
-                <button class="btn">Начать</button>
+                <h3>Критерий Колмогорова</h3>
+                <p>9 вопросов о тестировании распределений и симуляции</p>
+                <button class="start-btn">Начать</button>
             </div>
 
-            <div class="task-card task4" onclick="startQuiz(4)">
+            <div class="task-card" data-task="4">
                 <h2>Задача 4</h2>
-                <p><strong>VaR &amp; Backtesting</strong></p>
-                <p>9 вопросов о риск-менеджменте и тестах Купика/Христофферсена</p>
-                <button class="btn">Начать</button>
+                <h3>VaR и бэктестинг</h3>
+                <p>11 вопросов о расчете VaR, тестах Купица и Христофферсена</p>
+                <button class="start-btn">Начать</button>
             </div>
 
-            <div class="task-card task5" onclick="startQuiz(5)">
+            <div class="task-card" data-task="5">
                 <h2>Задача 5</h2>
-                <p><strong>Линейная регрессия</strong></p>
-                <p>10 вопросов о коэффициентах, R², гипотезах, предпосылках</p>
-                <button class="btn">Начать</button>
+                <h3>Линейная регрессия</h3>
+                <p>10 вопросов о коэффициентах, R², остатках и проверках</p>
+                <button class="start-btn">Начать</button>
             </div>
         </div>
     </div>
 
-    <div id="quizModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="taskTitle"></h2>
-                <button class="close-btn" onclick="closeQuiz()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="progress-bar">
-                    <div id="progressFill" class="progress-fill" style="width: 0%"></div>
-                </div>
-                <div id="questionContainer"></div>
-            </div>
-            <div class="modal-footer">
-                <div class="nav-buttons">
-                    <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" style="display:none;">Назад</button>
-                </div>
-                <div>
-                    <span id="questionCount" style="color: var(--text-light); margin-right: 20px;"></span>
-                    <button class="btn" id="nextBtn" onclick="nextQuestion()">Далее</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="quiz-container"></div>
 
-    <script>
-        const quizData = {
-            1: {
-                title: "Задача 1: Формула полной вероятности",
-                questions: [
-                    {
-                        type: "multiple",
-                        text: "Какие два условия необходимо выполнить, чтобы события B₀, B₁, B₂ образовали полную группу?",
-                        options: [
-                            { text: "Попарная несовместимость (Bᵢ ∩ Bⱼ = ∅) и полнота (∑P(Bᵢ) = 1)", correct: true, explanation: "Это оба необходимых условия. Несовместимость гарантирует отсутствие пересечений, полнота — что все вероятности в сумме дают 1." },
-                            { text: "Независимость (P(Bᵢ ∩ Bⱼ) = P(Bᵢ)·P(Bⱼ))", correct: false, explanation: "Независимость не требуется. События могут быть зависимыми в полной группе." },
-                            { text: "Только полнота суммы вероятностей", correct: false, explanation: "Недостаточно. Необходимо еще попарное исключение (несовместимость)." },
-                            { text: "Все события должны быть равновероятны", correct: false, explanation: "Вероятности могут быть разными. Главное — их сумма равна 1." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Можно ли в формуле полной вероятности использовать P(A) = ∑P(A|Bᵢ) вместо P(A) = ∑P(Bᵢ)·P(A|Bᵢ)?",
-                        options: [
-                            { text: "Нет, это фундаментальная ошибка. P(A|Bᵢ) нормирована внутри Bᵢ", correct: true, explanation: "Верно. Условная вероятность P(A|Bᵢ) — это вероятность A только в подпространстве Bᵢ. Нужно взвесить его по P(Bᵢ)." },
-                            { text: "Да, если события независимы", correct: false, explanation: "Нет, даже при независимости это неверно. Нужно всегда умножать на P(Bᵢ)." },
-                            { text: "Да, если событий ровно 3", correct: false, explanation: "Количество событий не влияет на правильность формулы." },
-                            { text: "Можно, это эквивалентные формулы", correct: false, explanation: "Это совсем разные формулы. Первая вообще не имеет смысла." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Для вариант 1 (P(B₀)=0.6, P(B₁)=0.3, P(B₂)=0.1) получили P(A) = 0.68. В каком диапазоне должен быть правильный ответ?",
-                        options: [
-                            { text: "P(A) ∈ [0, 1]", correct: true, explanation: "P(A) всегда вероятность, поэтому ∈ [0,1]. Полученное значение 0.68 прошло эту проверку." },
-                            { text: "P(A) ≤ 0.5", correct: false, explanation: "Нет такого ограничения. P(A) может быть > 0.5." },
-                            { text: "P(A) ∈ [P(B₀), 1]", correct: false, explanation: "Неверно. P(A) может быть и меньше P(B₀)." },
-                            { text: "P(A) должен равняться P(A|B₀)", correct: false, explanation: "Нет. P(A) — безусловная вероятность, P(A|B₀) — условная в рамках B₀." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Когда использовать формулу Байеса вместо полной вероятности?",
-                        options: [
-                            { text: "Для обратной задачи: найти P(Bᵢ|A) — вероятность причины при известном следствии", correct: true, explanation: "Форм. Байеса: P(Bᵢ|A) = P(A|Bᵢ)·P(Bᵢ) / P(A). Здесь P(A) вычисляют по форм. полной вероятности." },
-                            { text: "Когда есть три и более разбиений", correct: false, explanation: "Работает при любом числе событий в разбиении." },
-                            { text: "Всегда, она универсальнее", correct: false, explanation: "Нет. Они решают разные задачи: полная вер. считает P(A), Байес — P(причина|следствие)." },
-                            { text: "Когда события независимы", correct: false, explanation: "Независимость здесь не требуется и не помогает." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Могут ли события B₀, B₁, B₂ быть одновременно несовместимыми (P(Bᵢ ∩ Bⱼ) = 0) и независимыми?",
-                        options: [
-                            { text: "Нет, если они несовместимы с P > 0, то зависимы", correct: true, explanation: "Если Bᵢ ∩ Bⱼ = ∅ (несовместимы), то P(Bᵢ ∩ Bⱼ) = 0 ≠ P(Bᵢ)·P(Bⱼ), поэтому зависимы." },
-                            { text: "Да, всегда", correct: false, explanation: "Нет, несовместимость и независимость несовместимы (кроме тривиальных случаев)." },
-                            { text: "Только если все имеют вероятность 0.5", correct: false, explanation: "Вероятности не спасают несовместимость." },
-                            { text: "Да, если их число четное", correct: false, explanation: "Количество не влияет на логику." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "В формуле полной вероятности P(A) = ∑P(Bᵢ)·P(A|Bᵢ), что представляет слагаемое P(B₁)·P(A|B₁)?",
-                        options: [
-                            { text: "Вероятность события (A ∩ B₁) — одновременно произойти A и B₁", correct: true, explanation: "Верно: P(B₁)·P(A|B₁) = P(A ∩ B₁) по определению условной вероятности." },
-                            { text: "Условная вероятность A при B₁", correct: false, explanation: "Это P(A|B₁), а не P(B₁)·P(A|B₁)." },
-                            { text: "Полная вероятность B₁", correct: false, explanation: "Это просто P(B₁)." },
-                            { text: "Сумма вероятностей", correct: false, explanation: "Это произведение, не сумма." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Визуальный эквивалент формулы полной вероятности — это:",
-                        options: [
-                            { text: "Дерево событий, где суммируются все пути к A", correct: true, explanation: "В дереве вероятностей каждый путь к A — это произведение P(Bᵢ)·P(A|Bᵢ). Полная вероятность — сумма всех путей." },
-                            { text: "Числовая прямая", correct: false, explanation: "Неподходящая визуализация." },
-                            { text: "График условной вероятности", correct: false, explanation: "Не лучший способ визуализировать эту формулу." },
-                            { text: "Матрица переходов", correct: false, explanation: "Матрица переходов применяется к цепям Маркова." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Какая из санитарных проверок результата наиболее критична?",
-                        options: [
-                            { text: "Проверить, что P(A) ∈ [0, 1] и ∑P(Bᵢ) = 1", correct: true, explanation: "Обе проверки важны: P(A) — вероятность, поэтому ∈ [0,1]; Bᵢ — разбиение, ∑P(Bᵢ) = 1." },
-                            { text: "Проверить, что P(A) < max(P(A|Bᵢ))", correct: false, explanation: "Неправильное условие. P(A) часто = max или находится между min и max." },
-                            { text: "Проверить, что ответ четный", correct: false, explanation: "Это не относится к вероятностям." },
-                            { text: "Проверить, что ∑P(A|Bᵢ) = 1", correct: false, explanation: "Это неверно. Условные вероятности не обязаны суммироваться в 1." }
-                        ]
-                    }
-                ]
-            },
-            2: {
-                title: "Задача 2: Сбор купонов",
-                questions: [
-                    {
-                        type: "multiple",
-                        text: "Геометрическое распределение моделирует:",
-                        options: [
-                            { text: "Число испытаний до первого успеха в схеме Бернулли", correct: true, explanation: "Это классическое применение геометрического распределения: T ~ Geom(p), где p — вероятность успеха в одном испытании." },
-                            { text: "Число успехов в n испытаниях", correct: false, explanation: "Это биномиальное распределение." },
-                            { text: "Сумму случайных величин", correct: false, explanation: "Сумма геометрических случайных величин — это отрицательное биномиальное." },
-                            { text: "Время между событиями в потоке", correct: false, explanation: "Это скорее экспоненциальное распределение (непрерывное)." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Для геометрического распределения с вероятностью успеха p, математическое ожидание равно:",
-                        options: [
-                            { text: "E[T] = 1/p", correct: true, explanation: "Стандартная формула: E[T] = 1/p. Например, при p=0.5 в среднем нужно 2 испытания." },
-                            { text: "E[T] = p", correct: false, explanation: "Неверно. При p близком к 1, E[T] должен быть близок к 1, а не к p." },
-                            { text: "E[T] = 1 - p", correct: false, explanation: "Неверная формула." },
-                            { text: "E[T] = p/(1-p)", correct: false, explanation: "Это отношение, но не ожидание геометрического распределения." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "В задаче о купонах для двух типов с вероятностями p₁ и p₂ = 1 - p₁, формула полного ожидания использует разбиение по:",
-                        options: [
-                            { text: "Первой покупке: какой купон выпал (F₁ или F₂)", correct: true, explanation: "Разбиение: либо первый купон F₁ (вер. p₁), либо F₂ (вер. p₂). Затем считаем E[N|F₁] и E[N|F₂]." },
-                            { text: "Общему числу покупок", correct: false, explanation: "Это было бы циклично: мы ищем число покупок, не можем на него условить." },
-                            { text: "Сумме всех доходов", correct: false, explanation: "В этой задаче доходов нет, только вероятности купонов." },
-                            { text: "Времени ожидания", correct: false, explanation: "Время ожидания — это и есть число покупок, что ищем." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Проверьте расчет для p₁ = 0.8, p₂ = 0.2: E[N] = 1 + 0.8/0.2 + 0.2/0.8 = ?",
-                        options: [
-                            { text: "5.25", correct: true, explanation: "Вычисляем: 1 + 4 + 0.25 = 5.25. Формула: E[N] = 1 + p₁/p₂ + p₂/p₁ (по формуле полного ожидания)." },
-                            { text: "6.0", correct: false, explanation: "Неверный расчет. Проверьте арифметику." },
-                            { text: "5.0", correct: false, explanation: "Близко, но не совпадает. 0.8/0.2 = 4, 0.2/0.8 = 0.25, итого 1+4+0.25 = 5.25." },
-                            { text: "4.25", correct: false, explanation: "Неверно. Может быть, пропущена 1?" }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Почему линейность математического ожидания E[X + Y] = E[X] + E[Y] работает даже для зависимых случайных величин?",
-                        options: [
-                            { text: "Это фундаментальное свойство, не требующее независимости", correct: true, explanation: "Линейность ожидания верна всегда, независимо от зависимостей. Это аксиома теории вероятностей." },
-                            { text: "Потому что все величины неотрицательны", correct: false, explanation: "Неотрицательность не требуется. Работает и с отрицательными величинами." },
-                            { text: "Только если дисперсии конечны", correct: false, explanation: "Дисперсии не нужны. Линейность следует из свойств интеграла." },
-                            { text: "Это верно только для независимых величин", correct: false, explanation: "Неверно. Это свойство верно всегда." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Для n равновероятных (1/n каждый) купонов, ожидаемое число покупок E[X] равно:",
-                        options: [
-                            { text: "n·Hₙ = n·∑(1/k), где Hₙ — гармоническое число", correct: true, explanation: "Формула: E[X] = n·(1 + 1/2 + 1/3 + ... + 1/n) = n·Hₙ. При n=3: E[X] = 3·(1 + 1/2 + 1/3) ≈ 5.5." },
-                            { text: "n²", correct: false, explanation: "Слишком быстрый рост. Гармоническое число растет логарифмически." },
-                            { text: "e·n", correct: false, explanation: "Неверная формула." },
-                            { text: "n·ln(n)", correct: false, explanation: "Близко к истине (Hₙ ≈ ln(n) + γ), но точная формула — n·Hₙ." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Если p₂ → 0 (редкий купон), как ведет себя E[N]?",
-                        options: [
-                            { text: "E[N] → ∞ (растет примерно как 1/p₂)", correct: true, explanation: "При p₂ очень малом, слагаемое p₁/p₂ становится огромным. Чем реже редкий купон, тем дольше его ждать." },
-                            { text: "E[N] → 1", correct: false, explanation: "Неверно. На самом деле растет." },
-                            { text: "E[N] стабилизируется", correct: false, explanation: "Нет, не стабилизируется." },
-                            { text: "E[N] → 0", correct: false, explanation: "Неверно, противоположное происходит." }
-                        ]
-                    }
-                ]
-            },
-            3: {
-                title: "Задача 3: Критерий Колмогорова",
-                questions: [
-                    {
-                        type: "multiple",
-                        text: "Теорема Колмогорова утверждает, что при n → ∞:",
-                        options: [
-                            { text: "√n · Dₙ →ᵈ K (распределение Колмогорова, универсальное)", correct: true, explanation: "Дₙ = max|Fₙ(x) - F(x)| — статистика КС. √n·Dₙ сходится по распределению к K(z), которое не зависит от F!" },
-                            { text: "Dₙ → 0 (сходится к нулю)", correct: false, explanation: "Dₙ → 0, но его нужно масштабировать на √n, чтобы получить нетривиальное предельное распределение." },
-                            { text: "Dₙ → стандартному нормальному", correct: false, explanation: "Не нормальное. Это специальное распределение Колмогорова." },
-                            { text: "Dₙ → равномерному", correct: false, explanation: "Не равномерное." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Почему обязательно масштабировать статистику на √n?",
-                        options: [
-                            { text: "Иначе Dₙ → 0 и распределение зависит от n. Масштабирование делает его универсальным", correct: true, explanation: "Без масштабирования Dₙ → 0. С масштабированием √n·Dₙ получает нетривиальное предельное распределение, одинаковое для всех n." },
-                            { text: "Для увеличения числа наблюдений", correct: false, explanation: "Масштабирование не увеличивает n, оно нормирует статистику." },
-                            { text: "Для нормализации данных", correct: false, explanation: "Речь не о нормализации исходных данных." },
-                            { text: "Это просто математическая условность", correct: false, explanation: "Это физическое требование теории вероятностей." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "При n = 500, если D₅₀₀ ≈ 0.04, то T₅₀₀ = √500 · D₅₀₀ ≈ ?",
-                        options: [
-                            { text: "≈ 0.89", correct: true, explanation: "√500 ≈ 22.36, 22.36 · 0.04 ≈ 0.89. Это масштабированная статистика для сравнения с K(z)." },
-                            { text: "≈ 0.04", correct: false, explanation: "Это просто Dₙ без масштабирования." },
-                            { text: "≈ 4.0", correct: false, explanation: "Неверный расчет." },
-                            { text: "≈ 22.4", correct: false, explanation: "Это √500, не T₅₀₀." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Что проверяет задача 3 на двух уровнях?",
-                        options: [
-                            { text: "Уровень 1 (не делаем): одна выборка vs Exp(1). Уровень 2 (делаем): 200 статистик vs распр. K(z)", correct: true, explanation: "Уровень 2 проверяет, правда ли √n·Dₙ следует K(z). Если да — теория верна. Строим гистограмму 200 статистик и сравниваем с плотностью K." },
-                            { text: "Только генерацию случайных чисел", correct: false, explanation: "Это вспомогательный этап." },
-                            { text: "Только графики", correct: false, explanation: "Графики — визуализация, но суть в тесте распределения." },
-                            { text: "Только средние и дисперсии", correct: false, explanation: "Мы проверяем распределение целиком, не только первые моменты." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Что означает p-value = 0.88 при сравнении гистограммы статистик с K(z)?",
-                        options: [
-                            { text: "Нет оснований отвергнуть H₀ (теория верна), совпадение статистик с K хорошее", correct: true, explanation: "p-value = 0.88 >> 0.05: очень вероятно, что выборка статистик действительно имеет распределение K. Теория подтверждена." },
-                            { text: "Теория точно верна", correct: false, explanation: "p-value показывает, что гипотеза H₀ не отвергается, но это не доказывает истину." },
-                            { text: "Есть существенное отличие", correct: false, explanation: "Наоборот, отличие минимально. При p >> 0.05 гипотеза не отвергается." },
-                            { text: "Ошибка в расчетах", correct: false, explanation: "Высокий p-value говорит об отсутствии ошибок." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Где достигается максимум |Fₙ(x) - F(x)| для эмпирической CDF?",
-                        options: [
-                            { text: "В точках скачка эмпирической CDF (в точках выборки), часто в хвостах", correct: true, explanation: "Fₙ скачет в точках наблюдений, F гладкая. Максимальное расстояние часто в хвостах, где F меняется медленнее всего." },
-                            { text: "Всегда в середине диапазона", correct: false, explanation: "Не обязательно в середине. Часто в хвостах." },
-                            { text: "Нельзя определить без вычислений", correct: false, explanation: "Можно предположить по структуре Fₙ." },
-                            { text: "В точке медианы", correct: false, explanation: "Медиана — частный случай, но не правило." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Преимущество критерия Колмогорова для непрерывных распределений перед χ²-тестом:",
-                        options: [
-                            { text: "Не требует группировки данных, сохраняет информацию, нет субъективности в выборе интервалов", correct: true, explanation: "χ² требует разбить данные на интервалы (субъективный выбор) и считает частоты. КС работает с данными как есть, максимально информативно." },
-                            { text: "Дает более точные p-value", correct: false, explanation: "Точность зависит от метода применения." },
-                            { text: "Работает с дискретными распределениями", correct: false, explanation: "КС лучше работает с непрерывными. Для дискретных есть модификации." },
-                            { text: "Работает быстрее", correct: false, explanation: "Скорость сопоставима." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Если генерировать из Exp(2), но тестировать против Exp(1), статистики будут:",
-                        options: [
-                            { text: "Систематически завышены, p-value низкий, H₀ отвергается", correct: true, explanation: "Exp(2) имеет параметр λ=1/2, более растянута. Это систематическое отличие вызовет высокие Dₙ и низкие p-value. H₀ (что это Exp(1)) отвергнется." },
-                            { text: "В норме", correct: false, explanation: "Нет, будет систематическое отличие." },
-                            { text: "Заниженными", correct: false, explanation: "Скорее завышены." },
-                            { text: "Случайными", correct: false, explanation: "Будет систематическое смещение, не случайные колебания." }
-                        ]
-                    }
-                ]
-            },
-            4: {
-                title: "Задача 4: VaR &amp; Backtesting",
-                questions: [
-                    {
-                        type: "multiple",
-                        text: "Value at Risk (VaR₀.₉₅) интерпретируется как:",
-                        options: [
-                            { text: "Максимальный ожидаемый убыток с вероятностью 95% (в 5% случаев может быть хуже)", correct: true, explanation: "VaR₀.₉₅ — это квантиль 95% убытков. В 95% дней потери не превышают VaR, но в 5% могут быть больше." },
-                            { text: "Минимальная прибыль, гарантированная с 95%", correct: false, explanation: "VaR — это убыток, не прибыль. И это не гарантия." },
-                            { text: "Средний убыток портфеля", correct: false, explanation: "Это медиана или квантиль, не среднее." },
-                            { text: "Стандартное отклонение доходности", correct: false, explanation: "Стандартное отклонение — мера волатильности, не VaR." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Для непрерывных доходностей используем исторический VaR вместо параметрического, потому что:",
-                        options: [
-                            { text: "Реальные доходности имеют тяжелые хвосты, нарушается нормальность, параметрический недооценивает риск", correct: true, explanation: "Параметрический VaR предполагает нормальность. На практике хвосты тяжелее, убытки экстремальнее. Исторический VaR не делает предположений." },
-                            { text: "Параметрический метод запрещен", correct: false, explanation: "Не запрещен, но менее надежен при тяжелых хвостах." },
-                            { text: "Исторический всегда точнее", correct: false, explanation: "Зависит от данных и периода истории." },
-                            { text: "Быстродействие", correct: false, explanation: "Параметрический быстрее. Скорость не главное в риск-менеджменте." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Тест Купика (POF test) проверяет:",
-                        options: [
-                            { text: "Соответствие частоты нарушений VaR ожидаемой частоте α", correct: true, explanation: "POF = Proportion Of Failures. Если VaR₀.₉₅, ожидаем ~5% нарушений. Купик проверяет: наблюдается ли близко к 5%?" },
-                            { text: "Независимость нарушений", correct: false, explanation: "Это проверяет Христофферсен. Купик только на частоту." },
-                            { text: "Нормальность распределения", correct: false, explanation: "Это другие тесты." },
-                            { text: "Автокорреляцию доходностей", correct: false, explanation: "Это анализ временных рядов." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Тест Христофферсена дополняет Купик проверкой:",
-                        options: [
-                            { text: "Независимости нарушений (отсутствие кластеризации)", correct: true, explanation: "Если нарушения кластеризуются (много подряд), это опасно: капитал может быть исчерпан за один 'плохой период'. Христофферсен проверяет отсутствие таких кластеров." },
-                            { text: "Асимметрии распределения", correct: false, explanation: "Это другой тест." },
-                            { text: "Среднего значения", correct: false, explanation: "Среднее не проверяется." },
-                            { text: "Гарантирует доходность", correct: false, explanation: "Никакой тест не гарантирует доходность." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Почему в backtesting нельзя использовать скользящие окна [0:5], [1:6], [2:7]?",
-                        options: [
-                            { text: "Окна перекрываются → наблюдения зависимы, тест Купика предполагает независимость", correct: true, explanation: "Купик строит биномиальный тест, предполагая независимые нарушения. Перекрытие нарушает это. Нужны непересекающиеся блоки." },
-                            { text: "Вычислительная сложность", correct: false, explanation: "Вычисления справятся." },
-                            { text: "Потеря информации", correct: false, explanation: "Наоборот, имеем больше окон." },
-                            { text: "Это просто соглашение", correct: false, explanation: "Это требование теории, не просто соглашение." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Для 5% VaR с 50 пятидневными блоками, зеленая зона Basel (адекватная модель):",
-                        options: [
-                            { text: "0-4 нарушения (ожидаем ~2.5)", correct: true, explanation: "При N=50 и α=5%, ожидаем 50·0.05=2.5 нарушения. Basel: 0-4 нарушения = зеленая (адекватная), 5-7 = желтая, 8+ = красная." },
-                            { text: "Ровно 5 нарушений", correct: false, explanation: "5 нарушений уже на границе желтой зоны." },
-                            { text: "Более 10 нарушений", correct: false, explanation: "10+ = явно красная зона, модель неудовлетворительна." },
-                            { text: "0 нарушений", correct: false, explanation: "0 — подозрительное значение (слишком хорошо?), но можно в зеленой." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Если p-value теста Купика = 0.65, это означает:",
-                        options: [
-                            { text: "Модель VaR адекватна, не отвергаем H₀", correct: true, explanation: "H₀: частота нарушений соответствует α (5%). p=0.65 >> 0.05, нет оснований отвергать H₀. Модель хороша." },
-                            { text: "Модель неправильная", correct: false, explanation: "Наоборот, модель выглядит адекватной." },
-                            { text: "Нужна другая модель", correct: false, explanation: "Не нужна. p-value высокий." },
-                            { text: "Данные содержат ошибки", correct: false, explanation: "Высокий p-value не указывает на ошибки." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Кластеризация нарушений (много нарушений подряд) опасна, потому что:",
-                        options: [
-                            { text: "Волатильность растет в кризис, убытки накапливаются, может превысить капитал", correct: true, explanation: "В период стресса волатильность резко растет, убытки большие и следуют один за другим. Капитал быстро истощается, риск банкротства высок." },
-                            { text: "Увеличивает вычислительную сложность", correct: false, explanation: "Вычисления — не главная проблема." },
-                            { text: "Нарушает статистику", correct: false, explanation: "Это практический риск, не просто статистический артефакт." },
-                            { text: "Просто плохо выглядит", correct: false, explanation: "Это серьезная проблема, не просто эстетическая." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Expected Shortfall (ES) отличается от VaR тем, что:",
-                        options: [
-                            { text: "ES показывает средний убыток за пределами VaR, учитывает тяжелые хвосты, когерентна", correct: true, explanation: "VaR = квантиль. ES = среднее убытков, превышающих VaR. ES когерентна (удовлетворяет аксиомам меры риска), VaR — нет." },
-                            { text: "ES всегда меньше VaR", correct: false, explanation: "Неверно. ES ≥ VaR всегда (среднее в хвосте ≥ квантиль)." },
-                            { text: "ES легче считается", correct: false, explanation: "VaR быстрее считается (только квантиль)." },
-                            { text: "ES не требует предположений", correct: false, explanation: "И ES требует выбор модели или метода расчета." }
-                        ]
-                    }
-                ]
-            },
-            5: {
-                title: "Задача 5: Линейная регрессия",
-                questions: [
-                    {
-                        type: "multiple",
-                        text: "Формула коэффициента наклона в парной регрессии: β₁ =",
-                        options: [
-                            { text: "ρ · σᵧ / σₓ", correct: true, explanation: "ρ — корреляция X и Y, σᵧ и σₓ — стандартные отклонения. Формула: β₁ = Cov(X,Y) / Var(X) = ρ·σᵧ·σₓ / σₓ² = ρ·σᵧ/σₓ." },
-                            { text: "ρ", correct: false, explanation: "Это корреляция, не коэффициент регрессии. Нужно еще учесть масштабы (σ)." },
-                            { text: "σᵧ / σₓ", correct: false, explanation: "Забыли ρ. Это было бы верно при ρ=1." },
-                            { text: "μᵧ - μₓ", correct: false, explanation: "Это разница средних, не регрессионный коэффициент." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Формула свободного члена: β₀ =",
-                        options: [
-                            { text: "μᵧ - β₁·μₓ", correct: true, explanation: "Чтобы линия проходила через центр облака (μₓ, μᵧ): μᵧ = β₀ + β₁·μₓ, откуда β₀ = μᵧ - β₁·μₓ." },
-                            { text: "μᵧ", correct: false, explanation: "Только если μₓ = 0, что редко." },
-                            { text: "σᵧ - σₓ", correct: false, explanation: "Разница стандартных отклонений не имеет отношения к β₀." },
-                            { text: "0 всегда", correct: false, explanation: "β₀ = 0 только при особых условиях." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Для варианта 1 (μₓ=5, σₓ=1, μᵧ=10, σᵧ=2, ρ=0.6), β₁ =",
-                        options: [
-                            { text: "1.2", correct: true, explanation: "β₁ = 0.6 · 2/1 = 0.6 · 2 = 1.2. Интерпретация: при +1 в X, Y растет на 1.2." },
-                            { text: "0.6", correct: false, explanation: "Это ρ. Не забывайте σᵧ/σₓ = 2/1 = 2, поэтому 0.6·2 = 1.2." },
-                            { text: "2.0", correct: false, explanation: "Это σᵧ/σₓ. Нужно еще умножить на ρ." },
-                            { text: "0.3", correct: false, explanation: "Это 0.6/2, противоположное направление." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Для варианта 1, β₀ =",
-                        options: [
-                            { text: "4", correct: true, explanation: "β₀ = 10 - 1.2·5 = 10 - 6 = 4. Уравнение: Y = 4 + 1.2·X. При X=5: Y = 4 + 6 = 10." },
-                            { text: "10", correct: false, explanation: "Это μᵧ. Но при X=0, Y≠10, потому что X не в начале координат." },
-                            { text: "-1.2", correct: false, explanation: "Неверный знак и значение." },
-                            { text: "6", correct: false, explanation: "Это β₁·μₓ, а не β₀." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Коэффициент детерминации R² в парной регрессии равен:",
-                        options: [
-                            { text: "ρ²", correct: true, explanation: "В парной регрессии R² = ρ² = доля объясненной дисперсии. Для варианта 1: R² = 0.6² = 0.36 = 36%." },
-                            { text: "ρ", correct: false, explanation: "Это корреляция. R² = ρ² (квадрат)." },
-                            { text: "(1 - ρ²)", correct: false, explanation: "Это остаточная доля, не R²." },
-                            { text: "β₁²", correct: false, explanation: "β₁² зависит от масштабов, не имеет вероятностного смысла." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "R² = 0.36 означает, что модель объясняет:",
-                        options: [
-                            { text: "36% вариации Y, остальные 64% — влияние других факторов и случайность", correct: true, explanation: "R² = 0.36: модель Y = β₀ + β₁·X объясняет 36% колебаний Y. Остаток (64%) — не объясненная часть (другие переменные, шум)." },
-                            { text: "36% выборки", correct: false, explanation: "Это не о выборке, а о дисперсии." },
-                            { text: "Ошибку 36%", correct: false, explanation: "Ошибка = 1 - R² = 64%, не 36%." },
-                            { text: "Качество 36 из 100", correct: false, explanation: "Примерно так, но точнее: 36% объясненной дисперсии." }
-                        ]
-                    },
-                    {
-                        type: "multiple",
-                        text: "Интерпретация β₁ = 1.2: \"При увеличении X на 1, Y в среднем\", options: [ { text:"увеличивается на 1.2", correct: true, explanation: "Это прямая интерпретация коэффициента регрессии в линейной модели." },                             { text: "увеличивается на 0.6", correct: false, explanation: "Это ρ, не β₁." },                             { text: "уменьшается на 1.2", correct: false, explanation: "β₁ > 0, поэтому рост, не убыль." },                             { text: "увеличивается в 1.2 раза", correct: false, explanation: "Это мультипликативное изменение, не аддитивное." }                         ]                     },                     {                         type: "multiple",                         text: "Санитарная проверка правильности β₀: регрессионная прямая должна проходить через",                         options: [                             { text: "точку (μₓ, μᵧ)", correct: true, explanation: "По конструкции β₀ = μᵧ - β₁·μₓ, поэтому при X=μₓ: Y_pred = β₀ + β₁·μₓ = μᵧ. Линия ВСЕГДА проходит через центр облака." },                             { text: "начало координат (0, 0)", correct: false, explanation: "Редко. Это было бы регрессия без свободного члена." },                             { text: "любую точку выборки", correct: false, explanation: "Линия не обязана проходить через данные точки." },                             { text: "точку с максимальной доходностью", correct: false, explanation: "Нет связи." }                         ]                     },                     {                         type: "multiple",                         text: "При каких условиях МНК-оценки являются BLUE (Best Linear Unbiased)?",                         options: [                             { text: "При выполнении 5 предпосылок Гаусса-Маркова (линейность, экзогенность, нет мультиколл., гомоскедастичность, нет автокорр.)", correct: true, explanation: "BLUE = наилучшие несмещенные линейные оценки. При выполнении этих 5 условий МНК дает минимальную дисперсию среди линейных несмещенных оценок." },                             { text: "Всегда", correct: false, explanation: "Нужны условия. При нарушении (гетероскедастичность и т.д.) другие методы могут быть лучше." },                             { text: "Только если данные нормальны", correct: false, explanation: "Нормальность требуется для более сильных результатов (МНК = максимум правдоподобия), но BLUE верна и без нее." },                             { text: "Никогда", correct: false, explanation: "При Гаусс-Маркове верна." }                         ]                     },                     {                         type: "multiple",                         text: "t-статистика для H₀: β₁ = 0 имеет распределение:",                         options: [                             { text: "t_{n-2}", correct: true, explanation: "Параметры β₀ и β₁, поэтому n-2 степени свободы. t = β₁ / SE(β₁) ~ t_{n-2} при H₀." },                             { text: "N(0,1)", correct: false, explanation: "t_{n-2} приближается к N(0,1) при n → ∞, но для конечных n это t-распределение." },                             { text: "χ²_1", correct: false, explanation: "χ² применяется к суммам квадратов, не к t-статистике." },                             { text: "F_{1,n-1}", correct: false, explanation: "F_{1,n-2} — квадрат t-статистики, но сама t-статистика ~ t_{n-2}." }                         ]                     }                 ]             }         };          let currentTask = null;
-        let currentQuestion = 0;
-        let answers = {};
-        let showedExplanation = {};
-
-        function startQuiz(taskNum) {
-            currentTask = taskNum;
-            currentQuestion = 0;
-            answers = {};
-            showedExplanation = {};
-            document.getElementById('quizModal').classList.add('active');
-            document.getElementById('taskTitle').textContent = quizData[taskNum].title;
-            showQuestion();
-        }
-
-        function showQuestion() {
-            const task = quizData[currentTask];
-            const q = task.questions[currentQuestion];
-            const container = document.getElementById('questionContainer');
-            const totalQuestions = task.questions.length;
-            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
-
-            document.getElementById('progressFill').style.width = progress + '%';
-            document.getElementById('questionCount').textContent = `Вопрос ${currentQuestion + 1} из ${totalQuestions}`;
-
-            let html = `
-                <div class="question-counter">Вопрос ${currentQuestion + 1} из ${totalQuestions}</div>
-                <div class="question-text">${q.text}</div>
-                <div class="options">
-            `;
-
-            q.options.forEach((opt, idx) => {
-                const isSelected = answers[currentQuestion] === idx;
-                const classes = ['option'];
-                if (isSelected) classes.push('selected');
-
-                html += `
-                    <div class="${classes.join(' ')}" onclick="selectAnswer(${idx})">
-                        <label style="cursor: pointer; display: flex; align-items: center;">
-                            <input type="radio" name="option_${currentQuestion}" ${isSelected ? 'checked' : ''} style="margin-right: 10px;">
-                            ${opt.text}
-                        </label>
-                    </div>
-                `;
-
-                if (isSelected && showedExplanation[currentQuestion]) {
-                    html += `<div class="correct-answer">${opt.explanation}</div>`;
-                }
-            });
-
-            html += '</div>';
-            container.innerHTML = html;
-
-            document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'block' : 'none';
-            document.getElementById('nextBtn').textContent = currentQuestion === totalQuestions - 1 ? 'Финиш' : 'Далее';
-        }
-
-        function selectAnswer(idx) {
-            answers[currentQuestion] = idx;
-            showedExplanation[currentQuestion] = true;
-            showQuestion();
-        }
-
-        function nextQuestion() {
-            const task = quizData[currentTask];
-            if (currentQuestion === task.questions.length - 1) {
-                showResults();
-            } else {
-                currentQuestion++;
-                showQuestion();
-            }
-        }
-
-        function prevQuestion() {
-            if (currentQuestion > 0) {
-                currentQuestion--;
-                showQuestion();
-            }
-        }
-
-        function showResults() {
-            const task = quizData[currentTask];
-            let correct = 0;
-
-            task.questions.forEach((q, idx) => {
-                if (answers[idx] !== undefined && q.options[answers[idx]].correct) {
-                    correct++;
-                }
-            });
-
-            const percentage = Math.round((correct / task.questions.length) * 100);
-            const container = document.getElementById('questionContainer');
-
-            let reviewHtml = '<div class="result-screen"><h2>Результаты</h2>';
-            reviewHtml += `<div class="result-score">${correct}/${task.questions.length}</div>`;
-            reviewHtml += `<p style="font-size: 1.2em; color: var(--text-light);">${percentage}%</p>`;
-
-            reviewHtml += '<div class="answer-review"><h3>Разбор ответов:</h3>';
-
-            task.questions.forEach((q, idx) => {
-                const selectedIdx = answers[idx];
-                const correctIdx = q.options.findIndex(o => o.correct);
-                const isCorrect = selectedIdx === correctIdx;
-
-                const reviewClass = isCorrect ? 'correct' : 'incorrect';
-                const statusSymbol = isCorrect ? '✓' : '✗';
-
-                reviewHtml += `
-                    <div class="review-item ${reviewClass}">
-                        <strong>${statusSymbol} Вопрос ${idx + 1}</strong>
-                        <div style="margin-bottom: 5px;">${q.text.substring(0, 100)}...</div>
-                        ${selectedIdx !== undefined ? `<div style="margin-top: 5px;"><strong>Ваш ответ:</strong> ${q.options[selectedIdx].text}</div>` : ''}
-                        ${!isCorrect ? `<div class="correct-answer"><strong>Правильный ответ:</strong> ${q.options[correctIdx].text}</div>` : ''}
-                        <div style="margin-top: 8px; font-size: 0.9em; color: var(--text-light);">${q.options[selectedIdx ?? correctIdx].explanation}</div>
-                    </div>
-                `;
-            });
-
-            reviewHtml += '</div>';
-            reviewHtml += '<button class="btn" onclick="closeQuiz()" style="margin-top: 20px;">Вернуться в меню</button>';
-            reviewHtml += '</div>';
-
-            container.innerHTML = reviewHtml;
-            document.getElementById('prevBtn').style.display = 'none';
-            document.getElementById('nextBtn').style.display = 'none';
-        }
-
-        function closeQuiz() {
-            document.getElementById('quizModal').classList.remove('active');
-            currentTask = null;
-            currentQuestion = 0;
-            answers = {};
-            showedExplanation = {};
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && currentTask !== null) {
-                closeQuiz();
-            }
-        });
-
-        // Expose functions to window
-        window.startQuiz = startQuiz;
-        window.closeQuiz = closeQuiz;
-        window.nextQuestion = nextQuestion;
-        window.prevQuestion = prevQuestion;
-        window.selectAnswer = selectAnswer;
-    </script>
+    <script src="./app.js"></script>
 </body>
 </html>
