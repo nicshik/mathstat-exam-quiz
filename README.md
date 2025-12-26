@@ -84,21 +84,32 @@
 - **Условия задания:** `final_exam_tasks.pdf`
 - **Данные для VaR:** `data-for-final-exam.csv`
 
-
 ### Лекции и семинары:
+Лекции
+lecture_1_25-09-08_kulikov_notes.pdf — Комбинаторика и основы теории вероятностей
+lecture_3_25-09-22_Kulikov_notes.pdf — Неравенства, ЦПТ, ЗБЧ
+lecture_4_29.09.25_Kulikov_notes.pdf — Описательная статистика, оценки
+lecture_5_25.10.04_Kulikov_notes.pdf — Проверка статистических гипотез
+lecture_6_11.10-gruppy-4-5-6_Kulikov_notes.pdf — Риски, VaR, ESF
+lecture_7_25.10.24_Kulikov.pdf — Множественная регрессия, временные ряды
 
-- `lecture_3_25-09-22_Kulikov_notes.pdf` — Неравенства, ЦПТ, ЗБЧ
-- `lecture_4_29.09.25_Kulikov_notes.pdf` — Описательная статистика, оценки
-- `seminar_8_25.10.31_Kulikov_notes.pdf` — VaR Backtesting (тесты Купика/Кристофферсена)
-
+Семинары
+seminar_1_25-09-12.pdf — Комбинаторика и вероятность
+seminar_2_25-09-19_Kulikov_notes.pdf — Дискретные случайные величины
+seminar_2_Zolin_notes.pdf — Условная вероятность и СВ
+seminar_3_sept_Kulikov_notes.pdf — Распределения вероятностей
+seminar_3_Zolin_notes.pdf — Математическое ожидание и непрерывные СВ
+seminar_4_25.10.03_Kulikov.pdf — Статистика и оценки параметров
+seminar_5_25.10.10_Kulikov.pdf — Проверка статистических гипотез
+seminar_1.1_vidy-riska_25.10.17_Kulikov.pdf — Виды риска: VaR, ESF, RAROC
+seminar_7_25.10.18_Kulikov.pdf — Линейная регрессия и диагностика
+seminar_8_25.10.31_Kulikov_notes.pdf — VaR Backtesting (тесты Купика/Христофферсена)
 
 ### Учебники:
-
 - `book_Lebedev-A.V.-Teoriia-veroiatnostei-i-matematicheskaia-statistika.pdf` — Классика МГУ
 - `book_verojatnost-i-statistika-uchebnoe-posobie.pdf` — Инженерное пособие
 
 
 ## Контакты и поддержка
-
 Этот репозиторий является учебным ресурсом для курса "Математические методы и основы статистики". Материалы основаны преимущественно на лекциях **А.В. Куликова** (2025).
 Для подготовки используйте AI-ассистента с подключенными [материалами Space 'Матстат'](https://www.perplexity.ai/spaces/matstat-mMCDvJUMTw6FbocpSqj.LA)
