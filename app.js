@@ -7,6 +7,7 @@ let currentQuestionIndex = 0;
 let userAnswers = {}; // { taskId: [{ questionId, userChoice, correct, question, options }] }
 let currentTaskAnswers = [];
 let shuffledOptionsMap = {}; // Track original -> shuffled index mapping
+let feedbackContext = {}; // Store context for feedback modal
 
 // =====================================
 // UTILITY: SHUFFLE ARRAY (Fisher-Yates)
@@ -37,12 +38,124 @@ function createIndexMapping(originalArray, shuffledArray) {
 }
 
 // =====================================
+// FEEDBACK MODAL FUNCTIONS
+// =====================================
+function openFeedbackModal(context) {
+    feedbackContext = context;
+    const modal = document.getElementById('feedback-modal');
+    const contextDiv = document.getElementById('feedback-context');
+    
+    // Format context for display
+    contextDiv.innerHTML = `
+        <div>
+            <strong>Задача:</strong> <span>${context.taskId}</span><br>
+            <strong>Вопрос:</strong> <span>${context.questionText}</span><br>
+            <strong>Ваш ответ:</strong> <span>${context.userAnswer}</span><br>
+            <strong>Правильный ответ:</strong> <span>${context.correctAnswer}</span><br>
+            <strong>Время:</strong> <span>${new Date().toLocaleString('ru-RU')}</span>
+        </div>
+    `;
+    
+    // Reset form
+    document.getElementById('feedback-form').reset();
+    document.getElementById('modal-status').textContent = '';
+    document.getElementById('modal-status').className = 'modal-status';
+    
+    modal.classList.add('active');
+}
+
+function closeFeedbackModal() {
+    const modal = document.getElementById('feedback-modal');
+    modal.classList.remove('active');
+    feedbackContext = {};
+}
+
+async function submitFeedback(event) {
+    event.preventDefault();
+    
+    const feedbackText = document.getElementById('feedback-text').value.trim();
+    const submitBtn = document.getElementById('modal-submit-btn');
+    const statusDiv = document.getElementById('modal-status');
+    
+    if (!feedbackText) {
+        showModalStatus('Пожалуйста, опишите неточность', 'error');
+        return;
+    }
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Отправляется...';
+    
+    try {
+        // Prepare feedback payload
+        const feedbackPayload = {
+            taskId: feedbackContext.taskId,
+            questionText: feedbackContext.questionText,
+            userAnswer: feedbackContext.userAnswer,
+            correctAnswer: feedbackContext.correctAnswer,
+            description: feedbackText,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent
+        };
+        
+        // Send to backend
+        const response = await fetch('/api/feedback', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(feedbackPayload)
+        });
+        
+        if (response.ok) {
+            showModalStatus('Спасибо за обратную связь! Ваше сообщение отправлено.', 'success');
+            document.getElementById('feedback-form').reset();
+            setTimeout(() => {
+                closeFeedbackModal();
+            }, 1500);
+        } else {
+            showModalStatus('Ошибка при отправке. Пожалуйста, попробуйте позже.', 'error');
+        }
+    } catch (error) {
+        console.error('Feedback submission error:', error);
+        showModalStatus('Ошибка при отправке: ' + error.message, 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Отправить';
+    }
+}
+
+function showModalStatus(message, type) {
+    const statusDiv = document.getElementById('modal-status');
+    statusDiv.textContent = message;
+    statusDiv.className = `modal-status ${type}`;
+}
+
+// =====================================
 // INITIALIZATION
 // =====================================
 document.addEventListener('DOMContentLoaded', () => {
     loadQuizData();
     attachStartButtons();
+    attachModalListeners();
 });
+
+function attachModalListeners() {
+    const modal = document.getElementById('feedback-modal');
+    const closeBtn = document.getElementById('modal-close-btn');
+    const cancelBtn = document.getElementById('modal-cancel-btn');
+    const feedbackForm = document.getElementById('feedback-form');
+    
+    closeBtn.addEventListener('click', closeFeedbackModal);
+    cancelBtn.addEventListener('click', closeFeedbackModal);
+    feedbackForm.addEventListener('submit', submitFeedback);
+    
+    // Close modal on overlay click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeFeedbackModal();
+        }
+    });
+}
 
 async function loadQuizData() {
     try {
@@ -258,6 +371,19 @@ function showResults() {
                             ` : ''}
                         </div>
                         <div class="result-explanation">${answer.explanation}</div>
+                        ${
+                            !answer.isCorrect ? `
+                                <button class="feedback-btn" data-answer-index="${idx}" style="
+                                    background: none;
+                                    border: none;
+                                    padding: 0;
+                                    margin-top: 0.75rem;
+                                    font-size: 0.85rem;
+                                ">
+                                    <span class="feedback-link">Сообщить о неточности</span>
+                                </button>
+                            ` : ''
+                        }
                     </div>
                 `).join('')}
             </div>
@@ -272,6 +398,24 @@ function showResults() {
     // Attach buttons
     document.querySelector('.retry-btn').addEventListener('click', () => startQuiz(currentTask));
     document.querySelector('.home-btn').addEventListener('click', returnHome);
+    
+    // Attach feedback buttons
+    const feedbackBtns = quizContainer.querySelectorAll('.feedback-btn');
+    feedbackBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const answerIndex = parseInt(e.currentTarget.dataset.answerIndex);
+            const answer = currentTaskAnswers[answerIndex];
+            
+            const context = {
+                taskId: currentTask,
+                questionText: answer.questionText,
+                userAnswer: `${String.fromCharCode(65 + answer.userChoice)}. ${answer.options[answer.userChoice]}`,
+                correctAnswer: `${String.fromCharCode(65 + answer.correctChoice)}. ${answer.options[answer.correctChoice]}`
+            };
+            
+            openFeedbackModal(context);
+        });
+    });
 }
 
 function returnHome() {
